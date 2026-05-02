@@ -1,0 +1,53 @@
+name: Ugentlig Simply snapshot
+
+on:
+  schedule:
+    # Søndag kl 04:00 UTC
+    - cron: '0 4 * * 0'
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Installer lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Hent alle filer fra Simply
+        run: |
+          mkdir -p simply-mirror
+          lftp -c "
+            set ftp:ssl-force true;
+            set ssl:verify-certificate no;
+            open -u '${{ secrets.SIMPLY_USER }}','${{ secrets.SIMPLY_PASSWORD }}' \
+              ftps://${{ secrets.SIMPLY_HOST }};
+            mirror --verbose ${{ secrets.SIMPLY_PATH }} simply-mirror/
+          "
+
+      - name: Pak til tar.gz
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          tar -czf "simply-backup-${DATE}.tar.gz" simply-mirror/
+          ls -lh "simply-backup-${DATE}.tar.gz"
+
+      - name: Upload som GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          gh release create "simply-backup-${DATE}" \
+            "simply-backup-${DATE}.tar.gz" \
+            --title "Simply snapshot ${DATE}" \
+            --notes "Automatisk ugentlig backup af wtkf.dk"
+
+      - name: Slet gamle releases (behold seneste 12)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release list --limit 100 \
+            | grep "simply-backup-" \
+            | tail -n +13 \
+            | awk '{print $1}' \
+            | xargs -I {} gh release delete {} --yes --cleanup-tag || true

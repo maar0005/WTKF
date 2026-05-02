@@ -202,25 +202,41 @@ function buildCasks(fadeRows, andeleRows) {
 
 // ── Hoved-fetch ───────────────────────────────────────────────────────────────
 
+async function fetchCSV(url, opts = {}) {
+  const resp = await fetch(url, { signal: AbortSignal.timeout(8000), ...opts });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  return resp.text();
+}
+
+async function fetchWithFallback(sheetsUrl, fallbackPath, label) {
+  try {
+    const text = await fetchCSV(sheetsUrl);
+    return text;
+  } catch (err) {
+    console.warn(`WTKF: Sheets fejlede for ${label} (${err.message}) — bruger lokal kopi`);
+    return fetchCSV(fallbackPath + "?v=" + Date.now());
+  }
+}
+
 window.WTKF_fetchData = async function () {
   const cfg = window.WTKF_CONFIG;
 
   try {
     let fadeRows, andeleRows;
 
-    if (cfg.SOURCE === "sheets") {
-      const pubBase = `https://docs.google.com/spreadsheets/d/e/${cfg.PUB_ID}/pub`;
+    if (cfg.SOURCE === "local") {
+      [fadeRows, andeleRows] = await Promise.all([
+        fetchCSV(cfg.LOCAL_FADE  + "?v=" + Date.now()).then(parseCSV),
+        fetchCSV(cfg.LOCAL_ANDELE + "?v=" + Date.now()).then(t => parseCSV(t, { skipRows: 1 })),
+      ]);
+    } else {
+      // SOURCE === "sheets" — prøver Sheets, falder tilbage til lokal kopi
+      const pubBase   = `https://docs.google.com/spreadsheets/d/e/${cfg.PUB_ID}/pub`;
       const fadeURL   = `${pubBase}?gid=${cfg.FADE_GID}&single=true&output=csv`;
       const andeleURL = `${pubBase}?gid=${cfg.ANDELE_GID}&single=true&output=csv`;
       [fadeRows, andeleRows] = await Promise.all([
-        fetch(fadeURL).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status} — Fade`); return r.text(); }).then(t => parseCSV(t)),
-        fetch(andeleURL).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status} — Andele`); return r.text(); }).then(t => parseCSV(t, { skipRows: 1 })),
-      ]);
-    } else {
-      // Local CSV files
-      [fadeRows, andeleRows] = await Promise.all([
-        fetch(cfg.LOCAL_FADE  + "?v=" + Date.now()).then(r => r.text()).then(parseCSV),
-        fetch(cfg.LOCAL_ANDELE + "?v=" + Date.now()).then(r => r.text()).then(parseCSV),
+        fetchWithFallback(fadeURL,   cfg.LOCAL_FADE,   "Fade"  ).then(parseCSV),
+        fetchWithFallback(andeleURL, cfg.LOCAL_ANDELE, "Andele").then(t => parseCSV(t, { skipRows: 1 })),
       ]);
     }
 
@@ -232,7 +248,7 @@ window.WTKF_fetchData = async function () {
     };
 
   } catch (e) {
-    console.error("WTKF: datafetch fejlede —", e);
+    console.error("WTKF: datafetch fejlede helt —", e);
     // Nødplan: returner tom cask-liste men vis siden
     return { casks: [], ...window.WTKF_STATIC };
   }
