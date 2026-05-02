@@ -25,7 +25,7 @@ jobs:
             set ftp:ssl-force true;
             set ssl:verify-certificate no;
             open -u '${{ secrets.SIMPLY_USER }}','${{ secrets.SIMPLY_PASSWORD }}' \
-              ftps://${{ secrets.SIMPLY_HOST }};
+              ftp://${{ secrets.SIMPLY_HOST }};
             mirror --verbose --exclude data/snapshots/ ${{ secrets.SIMPLY_PATH }} simply-mirror/
           "
 
