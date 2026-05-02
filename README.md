@@ -12,6 +12,14 @@ Hjemmeside for WTKF, en privat whiskyforening på Frederiksberg.
 - `referater/` – Generalforsamlingsreferater
 - `uploads/` – Billeder og medier
 
+## Datakilde
+
+Dynamiske data (fadoversigt, statistik m.m.) hentes fra foreningens Google Sheet:
+
+[WTKF Dataark](https://docs.google.com/spreadsheets/d/1JnAcsjZRJdKtDIrD-Eqez3VgbhEEM74pz2cTV4lGBf8/edit?gid=0#gid=0)
+
+Redigér arket for at opdatere indholdet på forsiden uden at ændre i koden.
+
 ## Teknologi
 
 Hjemmesiden er bygget i ren HTML/CSS med React (via CDN) til forsiden.
