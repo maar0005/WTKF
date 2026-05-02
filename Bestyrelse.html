@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestyrelse & Udvalg – WTKF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg:      oklch(12% 0.015 55);
+    --bg-card: oklch(16% 0.015 55);
+    --border:  oklch(25% 0.02 55);
+    --text:    oklch(93% 0.01 75);
+    --muted:   oklch(60% 0.015 65);
+    --faint:   oklch(35% 0.01 60);
+    --accent:  oklch(62% 0.13 40);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: oklch(30% 0.02 55); border-radius: 3px; }
+
+  header {
+    background: oklch(10% 0.015 55);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-svg { height: 40px; display: block; }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.18s;
+  }
+  .back-link:hover { color: var(--text); }
+  .back-link::before { content: "←"; font-size: 14px; }
+
+  .breadcrumb {
+    padding: 20px 40px 0;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .breadcrumb a { color: var(--faint); text-decoration: none; transition: color 0.15s; }
+  .breadcrumb a:hover { color: var(--accent); }
+
+  main {
+    flex: 1;
+    padding: 48px 40px 96px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .page-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .page-meta {
+    font-size: 13px;
+    color: var(--faint);
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 24px;
+    margin-top: 56px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2:first-of-type { margin-top: 0; }
+
+  /* ── PERSON CARDS ── */
+  .person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .person-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.18s;
+  }
+  .person-card:hover { border-color: oklch(62% 0.13 40 / 0.5); }
+
+  .person-role {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .person-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .person-note {
+    font-size: 12px;
+    color: var(--faint);
+    margin-top: 2px;
+  }
+
+  /* ── UDVALG ── */
+  .udvalg-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 22px 24px;
+    margin-bottom: 12px;
+  }
+
+  .udvalg-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .udvalg-members {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .udvalg-desc {
+    font-size: 13px;
+    color: var(--faint);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* ── SOURCE NOTE ── */
+  .source-note {
+    margin-top: 56px;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .source-note span { font-size: 12px; color: var(--faint); font-style: italic; }
+  .source-note a { font-size: 12px; color: var(--accent); text-decoration: none; }
+  .source-note a:hover { text-decoration: underline; }
+
+  footer {
+    background: oklch(8% 0.01 55);
+    border-top: 1px solid var(--border);
+    padding: 36px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer span { font-size: 11px; color: var(--faint); }
+  .slàinte { font-family: 'Playfair Display', serif; color: var(--accent); font-style: italic; font-size: 22px; }
+
+  @media (max-width: 640px) {
+    header, main, .breadcrumb { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" style="text-decoration:none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" class="logo-svg">
+      <text x="100" y="36" font-family="'Cinzel','Playfair Display',serif" font-size="34" font-weight="700"
+        fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="3">WTKF</text>
+      <line x1="20" y1="44" x2="88" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <polygon points="100,41 103,44 100,47 97,44" fill="oklch(62% 0.13 40)"/>
+      <line x1="112" y1="44" x2="180" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <text x="100" y="56" font-family="'Montserrat','DM Sans',sans-serif" font-size="5.5" font-weight="300"
+        fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="2.5" opacity="0.55">WHISKY TØNDE KLAPPER FORENING</text>
+    </svg>
+  </a>
+  <a href="index.html" class="back-link">Forside</a>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">WTKF</a>
+  <span>›</span>
+  <span style="color: var(--muted);">Forening</span>
+  <span>›</span>
+  <span>Bestyrelse og Udvalg</span>
+</nav>
+
+<main>
+  <p class="page-eyebrow">Foreningen · Organisation</p>
+  <h1>Bestyrelse &amp; Udvalg</h1>
+  <p class="page-meta">Aktuelle poster og udvalg i WhiskyTønde Klappe Foreningen · Opdateres efter generalforsamling</p>
+
+  <h2>Bestyrelse</h2>
+  <div class="person-grid">
+    <div class="person-card">
+      <div class="person-role">Formand</div>
+      <div class="person-name">Kim Søgaard</div>
+    </div>
+    <div class="person-card">
+      <div class="person-role">Kasserer</div>
+      <div class="person-name">Mathias Badstue Pedersen</div>
+    </div>
+    <div class="person-card">
+      <div class="person-role">Bestyrelsesmedlem</div>
+      <div class="person-name">Henrik Egetoft</div>
+    </div>
+    <div class="person-card">
+      <div class="person-role">Bestyrelsesmedlem</div>
+      <div class="person-name">Johannes Clausen</div>
+    </div>
+    <div class="person-card">
+      <div class="person-role">Bestyrelsesmedlem</div>
+      <div class="person-name">Poul-Jacob Vilhelmsen</div>
+    </div>
+  </div>
+
+  <h2>Udvalg</h2>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Udvalg for fremtid af nuværende tønder</div>
+    <div class="udvalg-members">Peter Diemer · Jesper Asmussen · Per Lund · Thomas Kvarts</div>
+  </div>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Udvalg for planlægning af whiskytønde klappetur til Nord Skotland 2020</div>
+    <div class="udvalg-members">Torben Erbs · Rune Bruun Mosbacher · Poul-Jacob Vilhelmsen · Aksel Gruelund</div>
+    <div class="udvalg-desc">Mathias Badstue Pedersen – Bidrager med erfaringer omkring planlægning af tidligere tur</div>
+  </div>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Udvalg for køb af ny whisky tønde</div>
+    <div class="udvalg-members">Peter Diemer · Rune Mosbacker · Henrik Egetoft Pedersen · Anna Lindefelt</div>
+  </div>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Udvalg for aktiviteter i løbet af det kommende år</div>
+    <div class="udvalg-members">Poul-Jacob Vilhelmsen · Rune Mosbacker · Mathias Badstue Pedersen</div>
+  </div>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Udvalg for afklaring af BREXIT</div>
+    <div class="udvalg-members">Tobias Leth · Peter Diemer</div>
+  </div>
+
+  <div class="udvalg-block">
+    <div class="udvalg-name">Hjemmeside</div>
+    <div class="udvalg-members">Maarten L. Kamstrup</div>
+  </div>
+
+  <div class="source-note">
+    <span>Se også <a href="Vedtægter.html">Vedtægter →</a></span>
+    <a href="http://wtkf.dk" target="_blank" rel="noreferrer">wtkf.dk ↗</a>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 WhiskyTønde Klappe Forening · Fredericia</span>
+  <span class="slàinte">Slàinte Mhath</span>
+</footer>
+
+</body>
+</html>

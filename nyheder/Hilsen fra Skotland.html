@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hilsen fra Skotland – WTKF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+<script>
+  const NYHED_TITEL     = "Hilsen fra Skotland";
+  const NYHED_DATO      = "15. september 2024";
+  const NYHED_KATEGORI  = "TUR";
+  const NYHED_UNDERTITEL = "Tre dage på Islay med sol, tåge og rigeligt med røg";
+  const NYHED_BILLEDE   = "../uploads/655640665_10235286020830951_6994785395148094722_n.jpg";
+</script>
+<script id="nyhed-raw" type="text/plain">
+Otte WTKF-medlemmer landede på Islay i torsdags. Vejret modtog os med det sædvanlige mix af sol og pludselige haglbyger, men det er jo en del af charmen.
+
+Første stop var Bruichladdich, hvor vi fik en rundvisning i produktionen og en smagning af tre single casks direkte fra fadene. En af dem var vores eget fad — klar og frisk, stadig ung men med en lovende karakter.
+
+## Dage på Islay
+
+Fredag besøgte vi Kilchoman, Skotlands yngste destilleri på Islay, som stadig dyrker en del af sin byg på de omkringliggende marker. Det giver en særlig terroir-fornemmelse man sjældent finder andre steder.
+
+Lørdag var vi på Laphroaig — det mest karakteristiske destilleri på øen. Røg og jod og salt vind fra havet. Formanden klappede en tønde på vegne af foreningen.
+
+## Hvad vi drak
+
+• Bruichladdich Classic Laddie — vores fad, ung og lovende
+• Kilchoman Machir Bay — frisk og velafbalanceret
+• Laphroaig 10 Year, Cask Strength — intet at tilføje
+
+---
+
+Vi er tilbage i Danmark mandag. Lugter stadig af tørv. Det er et godt tegn.
+</script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  :root {
+    --bg: oklch(12% 0.015 55); --bg-card: oklch(16% 0.015 55); --border: oklch(25% 0.02 55);
+    --text: oklch(93% 0.01 75); --muted: oklch(60% 0.015 65); --faint: oklch(35% 0.01 60);
+    --accent: oklch(62% 0.13 40);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: oklch(30% 0.02 55); border-radius: 3px; }
+  header { background: oklch(10% 0.015 55); border-bottom: 1px solid var(--border); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .back-link { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; transition: color .18s; }
+  .back-link:hover { color: var(--text); }
+  .back-link::before { content: "← "; }
+  .hero-img { width: 100%; height: clamp(280px, 38vw, 480px); object-fit: cover; display: block; filter: brightness(0.7) saturate(0.8); }
+  .hero-no-img { width: 100%; height: clamp(160px, 20vw, 260px); background: linear-gradient(135deg, oklch(14% 0.02 40) 0%, oklch(18% 0.025 55) 100%); position: relative; overflow: hidden; }
+  .hero-deco { position: absolute; right: -10px; top: -20px; font-family: 'Playfair Display', serif; font-size: clamp(120px, 20vw, 220px); font-weight: 700; line-height: 1; color: oklch(62% 0.13 40 / 0.07); letter-spacing: -0.04em; user-select: none; }
+  .meta-bar { max-width: 760px; margin: 0 auto; padding: 32px 40px 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .kat-badge { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; padding: 4px 12px; }
+  .meta-dato { font-size: 12px; color: var(--faint); letter-spacing: .06em; }
+  article { max-width: 760px; margin: 0 auto; padding: 20px 40px 96px; width: 100%; flex: 1; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4.5vw, 52px); font-weight: 400; line-height: 1.1; color: var(--text); margin: 18px 0 14px; text-wrap: pretty; }
+  .undertitel { font-size: clamp(15px, 1.8vw, 18px); color: var(--muted); line-height: 1.6; margin-bottom: 36px; padding-bottom: 32px; border-bottom: 1px solid var(--border); font-style: italic; text-wrap: pretty; }
+  .content p { font-size: 16px; line-height: 1.82; color: var(--muted); margin-bottom: 22px; text-wrap: pretty; }
+  .content h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin: 36px 0 14px; }
+  .content ul { margin: 0 0 22px 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .content ul li { font-size: 15px; color: var(--muted); line-height: 1.65; display: flex; gap: 10px; }
+  .content ul li::before { content: "·"; color: var(--accent); flex-shrink: 0; font-size: 18px; line-height: 1.4; }
+  .content hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+  footer { background: oklch(8% 0.01 55); border-top: 1px solid var(--border); padding: 36px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  footer span { font-size: 11px; color: var(--faint); }
+  .slainte { font-family: 'Playfair Display', serif; color: var(--accent); font-style: italic; font-size: 22px; }
+  @media (max-width: 640px) { header, article, .meta-bar { padding-left: 20px; padding-right: 20px; } footer { padding: 28px 20px; } }
+</style>
+</head>
+<body>
+<header>
+  <a href="../index.html" style="text-decoration:none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" style="height:40px;display:block;">
+      <text x="100" y="36" font-family="'Cinzel','Playfair Display',serif" font-size="34" font-weight="700" fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="3">WTKF</text>
+      <line x1="20" y1="44" x2="88" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <polygon points="100,41 103,44 100,47 97,44" fill="oklch(62% 0.13 40)"/>
+      <line x1="112" y1="44" x2="180" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+    </svg>
+  </a>
+  <a href="Nyheder.html" class="back-link">Alle nyheder</a>
+</header>
+
+<div id="main-content" style="flex:1;display:flex;flex-direction:column;"></div>
+
+<footer>
+  <span>© 2026 WhiskyTønde Klappe Forening · Fredericia</span>
+  <span class="slainte">Slàinte Mhath</span>
+</footer>
+
+<script>
+const KAT_COLORS = { FAD:"oklch(62% 0.13 40)", TUR:"oklch(62% 0.13 170)", FORENING:"oklch(62% 0.13 260)", SMAGNING:"oklch(62% 0.13 310)" };
+document.title = NYHED_TITEL + " – WTKF";
+const main = document.getElementById("main-content");
+const kc = KAT_COLORS[NYHED_KATEGORI] || "oklch(62% 0.13 40)";
+
+if (NYHED_BILLEDE) {
+  main.innerHTML += `<img class="hero-img" src="${NYHED_BILLEDE}" alt="${NYHED_TITEL}">`;
+} else {
+  main.innerHTML += `<div class="hero-no-img"><div class="hero-deco">${NYHED_KATEGORI}</div></div>`;
+}
+
+const kcAlpha12 = kc.slice(0,-1) + " / 0.12)";
+const kcAlpha3  = kc.slice(0,-1) + " / 0.3)";
+main.innerHTML += `<div class="meta-bar"><span class="kat-badge" style="color:${kc};background:${kcAlpha12};border:1px solid ${kcAlpha3}">${NYHED_KATEGORI}</span><span class="meta-dato">${NYHED_DATO}</span></div>`;
+
+const art = document.createElement("article");
+art.innerHTML = `<h1>${NYHED_TITEL}</h1>${NYHED_UNDERTITEL ? `<p class="undertitel">${NYHED_UNDERTITEL}</p>` : ""}<div class="content" id="nyhed-content"></div>`;
+main.appendChild(art);
+
+const raw = document.getElementById("nyhed-raw").textContent.trim();
+const el = document.getElementById("nyhed-content");
+let list = null;
+raw.split(/\n/).forEach(line => {
+  const s = line.trim();
+  if (s.startsWith("## ")) { if(list){el.appendChild(list);list=null;} const h=document.createElement("h2");h.textContent=s.slice(3);el.appendChild(h); }
+  else if (s === "---") { if(list){el.appendChild(list);list=null;} el.appendChild(document.createElement("hr")); }
+  else if (s.startsWith("• ") || s.startsWith("- ")) { if(!list){list=document.createElement("ul");} const li=document.createElement("li");li.textContent=s.slice(2);list.appendChild(li); }
+  else if (s === "") { if(list){el.appendChild(list);list=null;} }
+  else { if(list){el.appendChild(list);list=null;} const p=document.createElement("p");p.textContent=s;el.appendChild(p); }
+});
+if(list) el.appendChild(list);
+</script>
+</body>
+</html>

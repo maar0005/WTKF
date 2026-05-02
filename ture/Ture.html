@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ture – WTKF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  :root {
+    --bg: oklch(12% 0.015 55); --bg-card: oklch(16% 0.015 55); --bg-hover: oklch(19% 0.016 55);
+    --border: oklch(25% 0.02 55); --text: oklch(93% 0.01 75); --muted: oklch(60% 0.015 65);
+    --faint: oklch(35% 0.01 60); --accent: oklch(62% 0.13 40);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: oklch(30% 0.02 55); border-radius: 3px; }
+
+  header { background: oklch(10% 0.015 55); border-bottom: 1px solid var(--border); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .back-link { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; transition: color .18s; }
+  .back-link:hover { color: var(--text); }
+  .back-link::before { content: "← "; }
+
+  main { flex: 1; padding: 56px 40px 96px; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+  .page-eyebrow { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 54px); font-weight: 400; margin-bottom: 10px; }
+  .page-meta { font-size: 13px; color: var(--faint); margin-bottom: 52px; padding-bottom: 28px; border-bottom: 1px solid var(--border); font-style: italic; }
+
+  /* ── STORE TUR-CARDS ── */
+  #tur-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px; margin-bottom: 64px; }
+
+  .tur-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    text-decoration: none; color: inherit; overflow: hidden;
+    transition: border-color .22s, transform .22s, box-shadow .22s;
+    display: flex; flex-direction: column;
+  }
+  .tur-card:hover { border-color: oklch(62% 0.13 40 / 0.5); transform: translateY(-3px); box-shadow: 0 14px 48px oklch(0% 0 0 / 0.3); }
+  .tur-card:hover .tc-img-inner { transform: scale(1.05); }
+
+  .tc-img { height: 220px; overflow: hidden; position: relative; background: oklch(11% 0.02 40); flex-shrink: 0; }
+  .tc-img-inner { width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.55) saturate(0.75); transition: transform .55s ease; }
+  .tc-year-deco { position: absolute; right: -8px; bottom: -12px; font-family: 'Playfair Display', serif; font-size: 80px; font-weight: 700; line-height: 1; color: oklch(62% 0.13 40 / 0.15); letter-spacing: -0.04em; user-select: none; }
+  .tc-dest-badge { position: absolute; top: 14px; left: 14px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; background: oklch(12% 0.015 55 / 0.85); color: var(--muted); border: 1px solid var(--border); }
+
+  .tc-body { padding: 22px 24px 26px; display: flex; flex-direction: column; flex: 1; }
+  .tc-year { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .tc-titel { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; line-height: 1.2; margin-bottom: 8px; color: var(--text); }
+  .tc-beskrivelse { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; text-wrap: pretty; }
+  .tc-arrow { margin-top: 16px; font-size: 12px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
+
+  /* ── ARKIV ── */
+  .arkiv-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; padding-top: 48px; border-top: 1px solid var(--border); }
+  .arkiv-header h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; }
+  .arkiv-list { display: flex; flex-direction: column; gap: 2px; }
+  .arkiv-item {
+    display: flex; align-items: center; gap: 16px; padding: 14px 18px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    text-decoration: none; color: inherit; transition: border-color .18s, padding-left .18s;
+  }
+  .arkiv-item:hover { border-color: oklch(62% 0.13 40 / 0.4); padding-left: 24px; }
+  .arkiv-year { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: oklch(62% 0.13 40 / 0.3); min-width: 56px; flex-shrink: 0; }
+  .arkiv-dato { font-size: 11px; color: var(--faint); min-width: 130px; flex-shrink: 0; }
+  .arkiv-titel { font-size: 14px; color: var(--text); flex: 1; }
+  .arkiv-dest { font-size: 12px; color: var(--faint); }
+  .arkiv-arrow { color: var(--accent); font-size: 13px; }
+
+  #status { display: flex; align-items: center; gap: 10px; color: var(--faint); font-size: 13px; margin-bottom: 32px; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer { background: oklch(8% 0.01 55); border-top: 1px solid var(--border); padding: 36px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  footer span { font-size: 11px; color: var(--faint); }
+  .slainte { font-family: 'Playfair Display', serif; color: var(--accent); font-style: italic; font-size: 22px; }
+
+  @media (max-width: 640px) {
+    header, main { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 28px 20px; }
+    #tur-grid { grid-template-columns: 1fr; }
+    .arkiv-item { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="../index.html" style="text-decoration:none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" style="height:40px;display:block;">
+      <text x="100" y="36" font-family="'Cinzel','Playfair Display',serif" font-size="34" font-weight="700" fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="3">WTKF</text>
+      <line x1="20" y1="44" x2="88" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <polygon points="100,41 103,44 100,47 97,44" fill="oklch(62% 0.13 40)"/>
+      <line x1="112" y1="44" x2="180" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+    </svg>
+  </a>
+  <a href="../index.html" class="back-link">Forside</a>
+</header>
+
+<main>
+  <p class="page-eyebrow">Rejser &amp; oplevelser</p>
+  <h1>Tønde Klappe Ture</h1>
+  <p class="page-meta">Alle foreningens Skotlandsture siden starten. Siden opdateres automatisk når nye ture tilføjes.</p>
+
+  <div id="status"><div class="spinner"></div><span>Henter ture…</span></div>
+  <div id="tur-grid"></div>
+
+  <div id="arkiv-sektion" style="display:none;">
+    <div class="arkiv-header">
+      <h2>Arkiv</h2>
+      <span style="font-size:12px;color:var(--faint);">Ældre ture</span>
+    </div>
+    <div class="arkiv-list" id="arkiv-list"></div>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 WhiskyTønde Klappe Forening · Fredericia</span>
+  <span class="slainte">Slàinte Mhath</span>
+</footer>
+
+<script>
+async function load() {
+  const statusEl  = document.getElementById("status");
+  const grid      = document.getElementById("tur-grid");
+  const arkivSek  = document.getElementById("arkiv-sektion");
+  const arkivList = document.getElementById("arkiv-list");
+
+  try {
+    const [aktRes, arkRes] = await Promise.all([
+      fetch("manifest.json").then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch("arkiv/manifest.json").then(r => r.ok ? r.json() : []).catch(() => []),
+    ]);
+
+    const aktive     = [...aktRes].sort((a, b) => b.dato.localeCompare(a.dato));
+    const arkiverede = [...arkRes].sort((a, b) => b.dato.localeCompare(a.dato));
+
+    statusEl.style.display = "none";
+
+    aktive.forEach(tur => {
+      const a = document.createElement("a");
+      a.className = "tur-card";
+      a.href = tur.fil;
+      const imgStyle = tur.billede
+        ? `background-image:url('${tur.billede}')`
+        : `background:linear-gradient(135deg,oklch(11% 0.02 40),oklch(17% 0.025 200))`;
+      a.innerHTML = `
+        <div class="tc-img">
+          <div class="tc-img-inner" style="${imgStyle}"></div>
+          <div class="tc-year-deco">${tur.år}</div>
+          <div class="tc-dest-badge">${tur.destination}</div>
+        </div>
+        <div class="tc-body">
+          <div class="tc-year">${tur.år}</div>
+          <div class="tc-titel">${tur.titel}</div>
+          ${tur.beskrivelse ? `<div class="tc-beskrivelse">${tur.beskrivelse}</div>` : ""}
+          <div class="tc-arrow">Læs om turen →</div>
+        </div>`;
+      grid.appendChild(a);
+    });
+
+    if (arkiverede.length > 0) {
+      arkivSek.style.display = "block";
+      arkiverede.forEach(tur => {
+        const a = document.createElement("a");
+        a.className = "arkiv-item";
+        a.href = "arkiv/" + tur.fil;
+        a.innerHTML = `
+          <span class="arkiv-year">${tur.år}</span>
+          <span class="arkiv-dato">${tur.dato.slice(0,4)}</span>
+          <span class="arkiv-titel">${tur.titel}</span>
+          <span class="arkiv-dest">${tur.destination}</span>
+          <span class="arkiv-arrow">→</span>`;
+        arkivList.appendChild(a);
+      });
+    }
+  } catch(e) {
+    statusEl.style.display = "none";
+    console.error("Ture fejl:", e);
+  }
+}
+load();
+</script>
+</body>
+</html>

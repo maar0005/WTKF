@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referat – WTKF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     REDIGER HER — kun disse 3 linjer skal ændres per referat
+     ════════════════════════════════════════════════════════════════════════ -->
+<script>
+  const REFERAT_TITEL = "WTKF Generalforsamling 2024";
+  const REFERAT_DATO  = "Forår 2024 · Fredericia";
+  const REFERAT_AAR   = "2024";
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     REFERAT TEKST — paste indholdet herinde mellem backtick-tegnene.
+     Tomme linjer bliver til afsnit. Linjer der starter med "1." eller "•"
+     bliver til listepunkter. Linjer der starter med "---" bliver til divider.
+     ════════════════════════════════════════════════════════════════════════ -->
+<script id="referat-raw" type="text/plain">
+Dagsorden for ordinær generalforsamling
+
+1. Valg af dirigent og referent
+2. Formandens beretning
+3. Kassererens beretning og fremlæggelse af regnskab
+4. Indkomne forslag
+5. Fastsættelse af kontingent
+6. Valg til bestyrelse og udvalg
+7. Eventuelt
+
+---
+
+Ad 1. Valg af dirigent og referent
+
+Paste resten af referatet her. Bare copy-paste fra den originale tekst.
+
+Tomme linjer skaber automatisk nye afsnit.
+
+---
+
+Ad 2. Formandens beretning
+
+Endnu et afsnit. Alt vil se pænt ud.
+</script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg:      oklch(12% 0.015 55);
+    --bg-card: oklch(16% 0.015 55);
+    --border:  oklch(25% 0.02 55);
+    --text:    oklch(93% 0.01 75);
+    --muted:   oklch(60% 0.015 65);
+    --faint:   oklch(35% 0.01 60);
+    --accent:  oklch(62% 0.13 40);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: oklch(30% 0.02 55); border-radius: 3px; }
+
+  /* HEADER */
+  header {
+    background: oklch(10% 0.015 55);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.18s;
+  }
+  .back-link:hover { color: var(--text); }
+  .back-link::before { content: "← "; }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    padding: 20px 40px 0;
+    max-width: 820px;
+    margin: 0 auto;
+    width: 100%;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .breadcrumb a { color: var(--faint); text-decoration: none; transition: color 0.15s; }
+  .breadcrumb a:hover { color: var(--accent); }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    padding: 48px 40px 96px;
+    max-width: 820px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .page-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .page-meta {
+    font-size: 13px;
+    color: var(--faint);
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  /* AUTO-RENDERED CONTENT */
+  #referat-output p {
+    font-size: 15px;
+    line-height: 1.78;
+    color: var(--muted);
+    margin-bottom: 18px;
+    text-wrap: pretty;
+  }
+
+  #referat-output ol {
+    margin: 0 0 20px 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: referat-ol;
+  }
+
+  #referat-output ol li {
+    counter-increment: referat-ol;
+    display: flex;
+    gap: 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #referat-output ol li::before {
+    content: counter(referat-ol) ".";
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 24px;
+    padding-top: 3px;
+    flex-shrink: 0;
+  }
+
+  #referat-output ul {
+    margin: 0 0 20px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  #referat-output ul li {
+    display: flex;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    padding: 6px 0;
+  }
+
+  #referat-output ul li::before {
+    content: "·";
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  #referat-output hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  #referat-output h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: oklch(8% 0.01 55);
+    border-top: 1px solid var(--border);
+    padding: 36px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer span { font-size: 11px; color: var(--faint); }
+  .slàinte { font-family: 'Playfair Display', serif; color: var(--accent); font-style: italic; font-size: 22px; }
+
+  @media (max-width: 640px) {
+    header, main, .breadcrumb { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" style="text-decoration:none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" style="height:40px;display:block;">
+      <text x="100" y="36" font-family="'Cinzel','Playfair Display',serif" font-size="34" font-weight="700"
+        fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="3">WTKF</text>
+      <line x1="20" y1="44" x2="88" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <polygon points="100,41 103,44 100,47 97,44" fill="oklch(62% 0.13 40)"/>
+      <line x1="112" y1="44" x2="180" y2="44" stroke="oklch(93% 0.01 75)" stroke-width="0.8" opacity="0.4"/>
+      <text x="100" y="56" font-family="'Montserrat','DM Sans',sans-serif" font-size="5.5" font-weight="300"
+        fill="oklch(93% 0.01 75)" text-anchor="middle" letter-spacing="2.5" opacity="0.55">WHISKY TØNDE KLAPPER FORENING</text>
+    </svg>
+  </a>
+  <a href="index.html" class="back-link">Forside</a>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">WTKF</a>
+  <span>›</span>
+  <a href="index.html#arkiver">Arkiver</a>
+  <span>›</span>
+  <span id="bc-titel" style="color:var(--muted);"></span>
+</nav>
+
+<main>
+  <p class="page-eyebrow">Generalforsamling · Referat</p>
+  <h1 id="page-titel"></h1>
+  <p class="page-meta" id="page-dato"></p>
+  <div id="referat-output"></div>
+</main>
+
+<footer>
+  <span>© 2026 WhiskyTønde Klappe Forening · Fredericia</span>
+  <span class="slàinte">Slàinte Mhath</span>
+</footer>
+
+<script>
+  // Sæt titler fra konfiguration
+  document.title = REFERAT_TITEL + " – WTKF";
+  document.getElementById("page-titel").textContent = REFERAT_TITEL;
+  document.getElementById("page-dato").textContent = REFERAT_DATO;
+  document.getElementById("bc-titel").textContent = REFERAT_TITEL;
+
+  // Parse og render tekst
+  const raw = document.getElementById("referat-raw").textContent;
+  const lines = raw.split(/\r?\n/);
+  const output = document.getElementById("referat-output");
+
+  let olActive = false;
+  let ulActive = false;
+  let currentOl = null;
+  let currentUl = null;
+
+  function closeLists() {
+    if (olActive) { olActive = false; currentOl = null; }
+    if (ulActive) { ulActive = false; currentUl = null; }
+  }
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+
+    // Skip first/last empty lines at edge of template
+    if (!trimmed && !output.children.length) return;
+
+    // Divider
+    if (/^---+$/.test(trimmed)) {
+      closeLists();
+      const hr = document.createElement("hr");
+      output.appendChild(hr);
+      return;
+    }
+
+    // Numbered list item: starts with digit(s) followed by ". "
+    if (/^\d+\.\s/.test(trimmed)) {
+      if (ulActive) { ulActive = false; currentUl = null; }
+      if (!olActive) {
+        olActive = true;
+        currentOl = document.createElement("ol");
+        output.appendChild(currentOl);
+      }
+      const li = document.createElement("li");
+      li.textContent = trimmed.replace(/^\d+\.\s*/, "");
+      currentOl.appendChild(li);
+      return;
+    }
+
+    // Bullet list item: starts with • or -
+    if (/^[•\-]\s/.test(trimmed)) {
+      if (olActive) { olActive = false; currentOl = null; }
+      if (!ulActive) {
+        ulActive = true;
+        currentUl = document.createElement("ul");
+        output.appendChild(currentUl);
+      }
+      const li = document.createElement("li");
+      li.textContent = trimmed.replace(/^[•\-]\s*/, "");
+      currentUl.appendChild(li);
+      return;
+    }
+
+    // Sub-heading: "Ad N." or ALL CAPS short line
+    if (/^Ad\s+\d+/i.test(trimmed) || (/^[A-ZÆØÅ\s]{4,40}$/.test(trimmed) && trimmed.length < 60 && trimmed.length > 3)) {
+      closeLists();
+      const h3 = document.createElement("h3");
+      h3.textContent = trimmed;
+      output.appendChild(h3);
+      return;
+    }
+
+    // Empty line = paragraph break
+    if (!trimmed) {
+      closeLists();
+      return;
+    }
+
+    // Normal paragraph text
+    closeLists();
+    // Try to append to last <p> if it's not huge yet, else new paragraph
+    const last = output.lastElementChild;
+    if (last && last.tagName === "P" && last.textContent.length < 400) {
+      last.textContent += " " + trimmed;
+    } else {
+      const p = document.createElement("p");
+      p.textContent = trimmed;
+      output.appendChild(p);
+    }
+  });
+</script>
+</body>
+</html>

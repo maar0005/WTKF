@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WTKF – WhiskyTønde Klappe Forening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="wtkf-data.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="wtkf-components.jsx"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(30% 0.02 55); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = {
+  "theme": "dark",
+  "accentColor": "copper",
+  "font": "playfair"
+};
+
+const themes = {
+  dark: {
+    bg: "oklch(12% 0.015 55)", bgCard: "oklch(16% 0.015 55)", bgHover: "oklch(20% 0.018 55)",
+    border: "oklch(25% 0.02 55)", text: "oklch(93% 0.01 75)", textMuted: "oklch(60% 0.015 65)",
+    textFaint: "oklch(35% 0.01 60)", navBg: "oklch(10% 0.015 55)",
+    heroOverlay: "linear-gradient(to bottom, oklch(12% 0.015 55 / 0.3) 0%, oklch(12% 0.015 55 / 0.80) 60%, oklch(12% 0.015 55) 100%)",
+    sectionAlt: "oklch(14% 0.015 55)"
+  },
+  light: {
+    bg: "oklch(97% 0.01 75)", bgCard: "oklch(100% 0.005 75)", bgHover: "oklch(95% 0.015 75)",
+    border: "oklch(88% 0.015 70)", text: "oklch(18% 0.015 55)", textMuted: "oklch(42% 0.015 60)",
+    textFaint: "oklch(65% 0.01 65)", navBg: "oklch(18% 0.015 55)",
+    heroOverlay: "linear-gradient(to right, oklch(97% 0.01 75 / 0.97) 0%, oklch(97% 0.01 75 / 0.82) 35%, oklch(97% 0.01 75 / 0.15) 65%, oklch(97% 0.01 75 / 0) 100%), linear-gradient(to bottom, oklch(18% 0.015 55 / 0.05) 0%, oklch(18% 0.015 55 / 0.45) 60%, oklch(97% 0.01 75) 100%)",
+    sectionAlt: "oklch(94% 0.015 75)"
+  }
+};
+const accents = {
+  amber:  { primary: "oklch(68% 0.14 65)",  secondary: "oklch(55% 0.14 50)",  glow: "oklch(68% 0.14 65 / 0.15)" },
+  copper: { primary: "oklch(62% 0.13 40)",  secondary: "oklch(50% 0.13 30)",  glow: "oklch(62% 0.13 40 / 0.15)" },
+  teal:   { primary: "oklch(65% 0.12 200)", secondary: "oklch(52% 0.12 185)", glow: "oklch(65% 0.12 200 / 0.15)" }
+};
+
+const TRIP_IMGS = [
+  "uploads/655640665_10235286020830951_6994785395148094722_n.jpg",
+  "uploads/pexels-julianemonarifotografia-30654296.jpg",
+  "uploads/Skærmbillede 2026-04-27 120805.png",
+];
+
+// ── WTKF Logo SVG ─────────────────────────────────────────────────────────────
+function WTKFLogo({ height = 80, color = "#fff", accent = "#c9a84c", full = false }) {
+  if (full) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160" style={{ height, width: "auto", display: "block" }}>
+        <text x="240" y="90" fontFamily="'Cinzel', 'Playfair Display', serif" fontSize="86" fontWeight="700"
+          fill={color} textAnchor="middle" letterSpacing="6">WTKF</text>
+        <line x1="80" y1="108" x2="210" y2="108" stroke={color} strokeWidth="1" opacity="0.5" />
+        <polygon points="240,103 245,108 240,113 235,108" fill={accent} />
+        <line x1="270" y1="108" x2="400" y2="108" stroke={color} strokeWidth="1" opacity="0.5" />
+        <text x="240" y="140" fontFamily="'Montserrat', 'DM Sans', sans-serif" fontSize="13" fontWeight="300"
+          fill={color} textAnchor="middle" letterSpacing="5" opacity="0.7">WHISKY TØNDE KLAPPER FORENING</text>
+      </svg>
+    );
+  }
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" style={{ height, display: "block", minWidth: height * (200 / 60), width: "250px" }}>
+      <text x="100" y="36" fontFamily="'Cinzel', 'Playfair Display', serif" fontSize="34" fontWeight="700"
+        fill={color} textAnchor="middle" letterSpacing="3">WTKF</text>
+      <line x1="20" y1="44" x2="88" y2="44" stroke={color} strokeWidth="0.8" opacity="0.4" />
+      <polygon points="100,41 103,44 100,47 97,44" fill={accent} />
+      <line x1="112" y1="44" x2="180" y2="44" stroke={color} strokeWidth="0.8" opacity="0.4" />
+      <text x="100" y="56" fontFamily="'Montserrat', 'DM Sans', sans-serif" fontSize="5.5" fontWeight="300"
+        fill={color} textAnchor="middle" letterSpacing="2.5" opacity="0.55">WHISKY TØNDE KLAPPER FORENING</text>
+    </svg>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [data, setData] = React.useState({ casks: [], medlemmer: [], trips: [], anecdotes: [], vaerdisaet: [], news: [], referater: [] });
+  const [selectedCask, setSelected] = React.useState(null);
+  const [mobileOpen, setMobile] = React.useState(false);
+  const [activeNav, setActiveNav] = React.useState("hjem");
+
+  const [sysDark, setSysDark] = React.useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => setSysDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  const resolvedTheme = tweaks.theme === 'auto' ? (sysDark ? 'dark' : 'light') : tweaks.theme;
+  const t = themes[resolvedTheme];
+  const a = accents[tweaks.accentColor];
+  const serif = tweaks.font === "playfair" ? "'Playfair Display', serif" : "'DM Sans', sans-serif";
+
+  const [statsReady, setStatsReady] = React.useState(false);
+  React.useEffect(() => { window.WTKF_fetchData().then(d => { setData(d); setStatsReady(true); }); }, []);
+  React.useEffect(() => { document.body.style.background = t.bg; document.body.style.color = t.text; }, [t]);
+
+  const [liveNews, setLiveNews] = React.useState([]);
+  const [liveTrips, setLiveTrips] = React.useState([]);
+  React.useEffect(() => {
+    fetch("nyheder/manifest.json").then(r => r.ok ? r.json() : []).then(d => setLiveNews([...d].sort((a, b) => b.dato.localeCompare(a.dato)).slice(0, 3))).catch(() => {});
+    fetch("ture/manifest.json").then(r => r.ok ? r.json() : []).then(d => setLiveTrips([...d].sort((a, b) => b.dato.localeCompare(a.dato)).slice(0, 3))).catch(() => {});
+  }, []);
+
+  const memberCount = data?.medlemmer?.length ?? 0;
+  const { casks, medlemmer, trips, anecdotes, vaerdisaet, news, referater } = data;
+
+  const navItems = [
+    { id: "hjem",      label: "Hjem" },
+    { id: "vaerdier",  label: "Værdier" },
+    { id: "cask",      label: "Fade" },
+    { id: "medlemmer", label: "Medlemmer" },
+    { id: "nyheder",   label: "Nyheder" },
+    { id: "turer",     label: "Ture" },
+    { id: "arkiver",   label: "Arkiver" },
+    { id: "om",        label: "Om os" },
+    { id: "anekdoter", label: "Anekdoter" },
+  ];
+
+  const navTo = (id) => { setActiveNav(id); setMobile(false); };
+
+  const css = `
+    body { background: ${t.bg}; color: ${t.text}; }
+    ::selection { background: ${a.glow}; }
+    .cask-card { background: ${t.bgCard}; border: 1px solid ${t.border}; transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s; cursor: pointer; }
+    .cask-card:hover { transform: translateY(-3px); border-color: ${a.primary}55; box-shadow: 0 12px 40px ${a.glow}; }
+    .section-alt { background: ${t.sectionAlt}; }
+    .trip-card { background: ${t.bgCard}; border: 1px solid ${t.border}; overflow: hidden; cursor: pointer; }
+    .trip-card:hover .trip-img { transform: scale(1.04); }
+    .trip-img { transition: transform 0.5s ease; }
+    .footer-bg { background: oklch(8% 0.01 55); }
+    .val-row { border-bottom: 1px solid ${t.border}; }
+    .anec-card { border-top: 1px solid ${t.border}; transition: border-color 0.2s; }
+    .anec-card:hover { border-top-color: ${a.primary}; }
+    .nav-link { color: ${t.textMuted}; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; text-decoration: none; transition: color 0.18s; }
+    .nav-link:hover { color: ${t.text}; }
+    .mob-nav-link { display: block; padding: 16px 24px; color: ${t.textMuted}; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; text-decoration: none; border-bottom: 1px solid ${t.border}; transition: color 0.15s, background 0.15s; }
+    .mob-nav-link:hover { color: ${t.text}; background: ${t.bgCard}; }
+    .r-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .nyhed-card { background: ${t.bgCard}; border: 1px solid ${t.border}; overflow: hidden; transition: border-color .22s, transform .22s, box-shadow .22s; }
+    .nyhed-card:hover { border-color: ${a.primary}55; transform: translateY(-3px); box-shadow: 0 14px 40px ${a.glow}; }
+    .nyhed-card:hover .nc-img-inner { transform: scale(1.05); }
+    .nc-img { height: 180px; overflow: hidden; position: relative; background: oklch(11% 0.02 40); }
+    .nc-img-inner { width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.6) saturate(0.7); transition: transform .5s ease; }
+    .r-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .r-grid-vals { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: start; }
+    .r-stats { display: flex; gap: 56px; flex-wrap: wrap; }
+    @keyframes statFanIn {
+      from { opacity: 0; transform: translateX(-18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    section[id] { scroll-margin-top: 80px; }
+    .r-cask-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+    .r-section { padding: 88px 40px; }
+    .r-section-sm { padding: 64px 40px; }
+    .r-hero-pad { padding: 0 40px 88px; }
+    .hide-mobile { display: flex; }
+    .show-mobile { display: none; }
+    @media (max-width: 900px) {
+      .r-grid-3 { grid-template-columns: 1fr; }
+      .r-grid-2 { grid-template-columns: 1fr; gap: 40px; }
+      .r-grid-vals { grid-template-columns: 1fr; gap: 32px; }
+      .r-stats { gap: 32px; }
+      .r-cask-grid { grid-template-columns: 1fr 1fr; }
+      .r-section { padding: 64px 20px; }
+      .r-section-sm { padding: 48px 20px; }
+      .r-hero-pad { padding: 0 20px 64px; }
+      .hide-mobile { display: none !important; }
+      .show-mobile { display: flex !important; }
+    }
+    @media (max-width: 560px) {
+      .r-cask-grid { grid-template-columns: 1fr; }
+      .r-stats { gap: 24px; }
+    }
+  `;
+
+  return (
+    <div style={{ minHeight: "100vh" }}>
+      <style>{css}</style>
+
+      {/* ── NAV ── */}
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: `${t.navBg}f2`, backdropFilter: "blur(14px)", borderBottom: `1px solid ${t.border}` }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", height: 68, gap: 32 }}>
+          <a href="#hjem" onClick={() => navTo("hjem")} style={{ textDecoration: "none", flexShrink: 0, display: "flex", alignItems: "center" }}>
+            <WTKFLogo height={48} color={t.text} accent={a.primary} />
+          </a>
+
+          {/* Desktop nav */}
+          <div className="hide-mobile" style={{ gap: 24, marginLeft: "auto", alignItems: "center" }}>
+            {navItems.map(item => (
+              <a key={item.id} href={`#${item.id}`} className="nav-link" onClick={() => navTo(item.id)}
+                style={{ position: "relative", paddingBottom: 4, color: activeNav === item.id ? t.text : t.textMuted }}>
+                {item.label}
+                {activeNav === item.id && <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1.5, background: a.primary }} />}
+              </a>
+            ))}
+            <a href="#om"
+              style={{ padding: "8px 20px", border: `1.5px solid ${a.primary}`, color: a.primary, textDecoration: "none", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600, marginLeft: 8, transition: "background 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = a.glow}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              Medlemmer
+            </a>
+          </div>
+
+          {/* Hamburger */}
+          <button className="show-mobile" onClick={() => setMobile(o => !o)}
+            style={{ marginLeft: "auto", background: "none", border: `1px solid ${t.border}`, color: t.text, width: 40, height: 40, cursor: "pointer", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5 }}>
+            {mobileOpen
+              ? <span style={{ fontSize: 20, lineHeight: 1 }}>×</span>
+              : [0, 1, 2].map(i => <span key={i} style={{ width: 18, height: 1.5, background: t.text, display: "block" }} />)
+            }
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div style={{ borderTop: `1px solid ${t.border}`, background: t.navBg }}>
+            {navItems.map(item => (
+              <a key={item.id} href={`#${item.id}`} className="mob-nav-link" onClick={() => navTo(item.id)}>{item.label}</a>
+            ))}
+            <a href="#om" className="mob-nav-link" onClick={() => navTo("om")} style={{ color: a.primary, borderBottom: "none" }}>Medlemmer →</a>
+          </div>
+        )}
+      </nav>
+
+      {/* ── HERO ── */}
+      <section id="hjem" style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "flex-end" }}>
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "url('uploads/pexels-julianemonarifotografia-30654296.jpg')",
+            backgroundSize: "cover", backgroundPosition: "center",
+            filter: resolvedTheme === "light" ? "brightness(0.75) saturate(0.8)" : "brightness(0.55) saturate(0.7)",
+          }} />
+          <div style={{ position: "absolute", inset: 0, background: t.heroOverlay }} />
+        </div>
+
+        <div className="r-hero-pad" style={{ position: "relative", maxWidth: 1280, margin: "0 auto", width: "100%", paddingTop: 88 }}>
+          <div style={{ maxWidth: 640 }}>
+            <h1 style={{ fontFamily: serif, fontSize: "clamp(36px, 5.5vw, 76px)", fontWeight: tweaks.font === "playfair" ? 400 : 700, lineHeight: 1.08, color: t.text, marginBottom: 22, textWrap: "pretty" }}>
+              Vi ejer tønder.<br /><em style={{ color: a.primary }}>Vi venter med tålmodighed.</em>
+            </h1>
+            <p style={{ fontSize: "clamp(15px, 1.6vw, 17px)", lineHeight: 1.7, color: t.textMuted, maxWidth: 480, marginBottom: 36, textWrap: "pretty" }}>
+              WhiskyTønde Klappe Foreningen ejer andele i nøje udvalgte single cask fade fra Skotlands fineste destillerier — altid cask strength, aldrig kompromis.
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <a href="#cask" onClick={() => navTo("cask")} style={{ padding: "13px 32px", background: a.primary, color: "oklch(12% 0.015 55)", fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, textDecoration: "none" }}>Se vores fade</a>
+              <a href="#vaerdier" onClick={() => navTo("vaerdier")} style={{ padding: "13px 32px", border: `1px solid ${t.border}`, color: t.textMuted, fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 500, textDecoration: "none" }}>Vores værdier</a>
+            </div>
+          </div>
+          <div className="r-stats" style={{ marginTop: "clamp(32px, 5vh, 64px)", paddingTop: 36, borderTop: `1px solid ${t.border}`, visibility: statsReady ? "visible" : "hidden" }}>
+            {[
+              [String(casks.length), "Fade"],
+              [String(memberCount), "Medlemmer"],
+              [String(liveTrips.length > 0 ? liveTrips.length : trips.length), "Skotlandsture"],
+              ["2014", "Grundlagt"],
+              ["46%+", "Min. ABV"],
+            ].map(([n, l], i) => (
+              <div key={l} style={{ opacity: 0, animation: statsReady ? `statFanIn 0.55s cubic-bezier(0.22,1,0.36,1) ${i * 90}ms forwards` : "none" }}>
+                <div style={{ fontFamily: serif, fontSize: "clamp(22px,3vw,30px)", fontWeight: 400, color: t.text, lineHeight: 1 }}>{n}</div>
+                <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: t.textFaint, marginTop: 6 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── VÆRDISÆT ── */}
+      <section id="vaerdier" className="r-section" style={{ background: t.bg }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="r-grid-vals">
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 12 }}>Vores filosofi</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3vw,44px)", fontWeight: 400, color: t.text, lineHeight: 1.15, marginBottom: 18, textWrap: "pretty" }}>Hvad vi tror på</h2>
+              <p style={{ fontSize: 15, lineHeight: 1.72, color: t.textMuted, textWrap: "pretty" }}>WTKF er ikke blot en investering — det er et manifest. Vi køber kun fade der lever op til vores fælles værdisæt.</p>
+            </div>
+            <div>
+              {vaerdisaet.map((v, i) => (
+                <div key={v.label} className="val-row" style={{ display: "flex", gap: 24, alignItems: "flex-start", padding: "22px 0", flexWrap: "wrap" }}>
+                  <span style={{ fontFamily: "monospace", fontSize: 10, color: t.textFaint, paddingTop: 4, minWidth: 24 }}>{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ fontFamily: serif, fontSize: 19, color: a.primary, minWidth: 170, fontWeight: 400 }}>{v.label}</span>
+                  <span style={{ fontSize: 14, lineHeight: 1.65, color: t.textMuted, flex: 1, minWidth: 200, textWrap: "pretty" }}>{v.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FADE ── */}
+      <section id="cask" className="r-section section-alt">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 40, flexWrap: "wrap", gap: 20 }}>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 10 }}>Vores investeringer</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3.5vw,46px)", fontWeight: 400, color: t.text }}>Fade &amp; Andele</h2>
+            </div>
+          </div>
+          <div className="r-cask-grid">
+            {casks.map(cask => {
+              const sc = { lagrer: "oklch(68% 0.14 65)", aftappet: "oklch(55% 0.15 145)", planlagt: "oklch(55% 0.18 25)" };
+              const sl = { lagrer: "Lagrer", aftappet: "Aftappet", planlagt: "Planlagt" };
+              const fadTotal = cask.andele.reduce((s, m) => s + m.andele, 0);
+              return (
+                <div key={cask.id} className="cask-card" onClick={() => setSelected(cask)} style={{ padding: "24px 28px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                    <div>
+                      <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.15em", color: t.textFaint, marginBottom: 5 }}>{cask.year}</div>
+                      <h3 style={{ fontFamily: serif, fontSize: 20, fontWeight: 400, color: t.text, lineHeight: 1.2 }}>{cask.name}</h3>
+                    </div>
+                    <span style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", border: `1px solid ${(sc[cask.status] || sc.lagrer)}55`, color: sc[cask.status] || sc.lagrer, background: `${(sc[cask.status] || sc.lagrer)}14`, fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>
+                      {sl[cask.status] || cask.status}
+                    </span>
+                  </div>
+                  <div style={{ height: 1, background: t.border, marginBottom: 16 }} />
+                  <div style={{ display: "flex", gap: 20, marginBottom: 14 }}>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: t.textFaint, marginBottom: 3 }}>Region</div>
+                      <div style={{ fontSize: 13, color: t.textMuted }}>{cask.region}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: t.textFaint, marginBottom: 3 }}>Fadetype</div>
+                      <div style={{ fontSize: 12, color: t.textMuted }}>{(cask.fadetype || "—").replace("Ex-Bourbon ", "")}</div>
+                    </div>
+                    <div style={{ marginLeft: "auto" }}>
+                      <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: t.textFaint, marginBottom: 3 }}>Andele</div>
+                      <div style={{ fontSize: 20, fontFamily: serif, color: a.primary, fontWeight: 400, lineHeight: 1 }}>{fadTotal}</div>
+                      {cask.peatPPM > 0 && <div style={{ fontSize: 9, color: t.textFaint, marginTop: 3 }}>{cask.peatPPM} PPM</div>}
+                    </div>
+                  </div>
+                  <div style={{ height: 3, background: t.border }}>
+                    <div style={{ height: "100%", width: "100%", background: a.primary, opacity: 0.15 }} />
+                  </div>
+                  <div style={{ marginTop: 12, fontSize: 11, color: t.textFaint, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                    Se detaljer →
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── MEDLEMMER ── */}
+      <section id="medlemmer" className="r-section section-alt">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ marginBottom: 40 }}>
+            <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 10 }}>Andelsfordeling</p>
+            <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3.5vw,46px)", fontWeight: 400, color: t.text, marginBottom: 10 }}>Medlemsoversigt</h2>
+            <p style={{ fontSize: 14, color: t.textMuted, maxWidth: 560, textWrap: "pretty" }}>
+              Oversigt over alle medlemmers andele på tværs af foreningens fade. Klik på et fadenavn for at åbne detaljerne.
+            </p>
+          </div>
+          <MemberTable casks={casks} medlemmer={medlemmer} t={t} a={a} serif={serif} onSelectCask={setSelected} />
+        </div>
+      </section>
+
+      {/* ── TURE ── */}
+      <section id="turer" className="r-section section-alt">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 48, flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 10 }}>Rejser &amp; oplevelser</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3.5vw,46px)", fontWeight: 400, color: t.text }}>Tønde Klappe Ture</h2>
+            </div>
+            <a href="ture/Ture.html" style={{ fontSize: 12, color: a.primary, letterSpacing: ".1em", textTransform: "uppercase", fontWeight: 600, textDecoration: "none" }}>Se alle ture →</a>
+          </div>
+          <div className="r-grid-3">
+            {(liveTrips.length > 0 ? liveTrips : trips).map((trip, i) => {
+              const isLive = liveTrips.length > 0;
+              const imgSrc = isLive ? trip.billede : TRIP_IMGS[i];
+              const year   = isLive ? trip.år    : trip.year;
+              const title  = isLive ? trip.titel : trip.title;
+              const dest   = isLive ? trip.destination : trip.dest;
+              const desc   = isLive ? trip.beskrivelse : trip.desc;
+              const href   = isLive ? `ture/${trip.fil}` : (trip.url || "#");
+              return (
+                <a key={year + title} className="trip-card" href={href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                  <div className="trip-img" style={{
+                    height: 200, position: "relative",
+                    backgroundImage: imgSrc ? `url('${imgSrc}')` : "none",
+                    background: imgSrc ? undefined : `linear-gradient(135deg, oklch(11% 0.02 40), oklch(17% 0.025 200))`,
+                    backgroundSize: "cover", backgroundPosition: "center",
+                    filter: "brightness(0.7)",
+                  }}>
+                    <div style={{ position: "absolute", bottom: 12, right: 14, fontFamily: serif, fontSize: 52, fontWeight: 700, color: `${a.primary}30`, lineHeight: 1, letterSpacing: "-0.02em" }}>{year}</div>
+                  </div>
+                  <div style={{ padding: "24px 24px 28px" }}>
+                    <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: a.primary, marginBottom: 6 }}>{year}</div>
+                    <h3 style={{ fontFamily: serif, fontSize: 21, fontWeight: 400, color: t.text, marginBottom: 6 }}>{title}</h3>
+                    <div style={{ fontSize: 11, color: t.textFaint, letterSpacing: "0.08em", marginBottom: 10 }}>{dest}</div>
+                    <p style={{ fontSize: 14, lineHeight: 1.65, color: t.textMuted, textWrap: "pretty" }}>{desc}</p>
+                    <div style={{ marginTop: 16, fontSize: 12, color: a.primary, letterSpacing: ".1em", textTransform: "uppercase", fontWeight: 600 }}>Læs mere →</div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── NYHEDER ── */}
+      <section id="nyheder" className="r-section" style={{ background: t.bg }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 44, flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 10 }}>Foreningsnyt</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3.5vw,46px)", fontWeight: 400, color: t.text }}>Seneste nyt</h2>
+            </div>
+            <a href="nyheder/Nyheder.html" style={{ fontSize: 12, color: a.primary, letterSpacing: ".1em", textTransform: "uppercase", fontWeight: 600, textDecoration: "none" }}>Se alle nyheder →</a>
+          </div>
+          {liveNews.length === 0
+            ? <div style={{ color: t.textFaint, fontSize: 14, fontStyle: "italic" }}>Ingen nyheder endnu — tilføj en nyhed til <code style={{ fontFamily: "monospace", fontSize: 12, color: a.primary }}>nyheder/manifest.json</code></div>
+            : (
+              <div className="r-grid-3">
+                {liveNews.map(item => {
+                  const KAT_C = { FAD: a.primary, TUR: "oklch(62% 0.13 170)", FORENING: "oklch(62% 0.13 260)", SMAGNING: "oklch(62% 0.13 310)" };
+                  const kc = KAT_C[item.kategori] || a.primary;
+                  return (
+                    <a key={item.fil} href={`nyheder/${item.fil}`} className="nyhed-card" style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column" }}>
+                      <div className="nc-img">
+                        {item.billede
+                          ? <div className="nc-img-inner" style={{ backgroundImage: `url('${item.billede}')` }} />
+                          : <div className="nc-img-inner" style={{ background: `linear-gradient(135deg, oklch(14% 0.02 40), oklch(18% 0.025 55))`, position: "relative" }}>
+                              <div style={{ position: "absolute", right: -8, bottom: -12, fontFamily: serif, fontSize: 80, fontWeight: 700, color: `oklch(0% 0 0 / 0.1)`, lineHeight: 1, letterSpacing: "-0.04em", userSelect: "none" }}>{item.kategori}</div>
+                            </div>
+                        }
+                      </div>
+                      <div style={{ padding: "20px 22px 24px", display: "flex", flexDirection: "column", flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", fontWeight: 700, padding: "3px 9px", color: kc, background: `${kc.slice(0, -1)} / 0.12)`, border: `1px solid ${kc.slice(0, -1)} / 0.28)` }}>{item.kategori}</span>
+                          <span style={{ fontSize: 11, color: t.textFaint }}>{item.datoVis || item.dato}</span>
+                        </div>
+                        <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 400, lineHeight: 1.25, color: t.text, marginBottom: 8, textWrap: "pretty" }}>{item.titel}</div>
+                        {item.undertitel && <div style={{ fontSize: 13, color: t.textMuted, lineHeight: 1.6, flex: 1, textWrap: "pretty" }}>{item.undertitel}</div>}
+                        <div style={{ marginTop: 16, fontSize: 12, color: a.primary, letterSpacing: ".1em", textTransform: "uppercase", fontWeight: 600 }}>Læs nyhed →</div>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            )
+          }
+        </div>
+      </section>
+
+      {/* ── ARKIVER ── */}
+      <section id="arkiver" className="r-section" style={{ background: t.bg }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="r-grid-vals">
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 12 }}>Historik &amp; dokumenter</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,3vw,44px)", fontWeight: 400, color: t.text, lineHeight: 1.15, marginBottom: 18, textWrap: "pretty" }}>Referater &amp; Arkiver</h2>
+              <p style={{ fontSize: 14, lineHeight: 1.72, color: t.textMuted, textWrap: "pretty" }}>
+                Alle generalforsamlingsreferater siden foreningens start i 2014. Klik for at åbne referatet.
+              </p>
+              <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { label: "Vedtægter",            url: "Vedtægter.html" },
+                  { label: "Bestyrelse og udvalg", url: "Bestyrelse.html" },
+                  { label: "Referater",            url: "referater/Referater.html" },
+                  { label: "Nyheder",              url: "nyheder/Nyheder.html" },
+                  { label: "Ture",                 url: "ture/Ture.html" },
+                ].map(({ label, url }) => (
+                  <a key={label} href={url}
+                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: t.bgCard, border: `1px solid ${t.border}`, color: t.text, textDecoration: "none", fontSize: 13, fontWeight: 500, transition: "border-color 0.18s" }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = a.primary}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = t.border}>
+                    {label} <span style={{ color: a.primary }}>→</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div>
+              {(referater || []).map(ref => (
+                <a key={ref.year} href={ref.url} target="_blank" rel="noreferrer"
+                  style={{ display: "flex", alignItems: "center", gap: 20, padding: "18px 0", borderBottom: `1px solid ${t.border}`, textDecoration: "none", transition: "padding-left 0.18s" }}
+                  onMouseEnter={e => { e.currentTarget.style.paddingLeft = "8px"; e.currentTarget.querySelector(".ref-year").style.color = a.primary; }}
+                  onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; e.currentTarget.querySelector(".ref-year").style.color = t.textFaint; }}>
+                  <span className="ref-year" style={{ fontFamily: "monospace", fontSize: 13, color: t.textFaint, minWidth: 40, transition: "color 0.18s" }}>{ref.year}</span>
+                  <span style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, color: t.text, flex: 1 }}>{ref.title}</span>
+                  <span style={{ color: a.primary, fontSize: 14 }}>↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── OM ── */}
+      <section id="om" className="r-section" style={{ background: t.bg }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="r-grid-2">
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 14 }}>Hvem er vi</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(24px,3vw,42px)", fontWeight: 400, color: t.text, lineHeight: 1.2, marginBottom: 26, textWrap: "pretty" }}>
+                En forening bygget på fælles passion for god whisky
+              </h2>
+              <p style={{ fontSize: 15, lineHeight: 1.78, color: t.textMuted, marginBottom: 16, textWrap: "pretty" }}>
+                WTKF begyndte som en idé mellem en gruppe venner med ét fælles træk: En fælles passion for single malt whisky. I 2014 tog foreningen springet og stiftede WhiskyTønde Klappe Foreningen med det formål at eje og lagre egne fade fra Skotlands fineste destillerier.
+              </p>
+              <p style={{ fontSize: 15, lineHeight: 1.78, color: t.textMuted, textWrap: "pretty" }}>
+                Det første fad — en Craigellachie fra Speyside — var starten på det der siden er vokset til en forening med over 40 medlemmer og fade fra Islay til Orkney. Hvert år rejser dele af foreningen til Skotland for at besøge destillerier og klappe nye tønder.
+              </p>
+              <div style={{ marginTop: 32 }}>
+                {[
+                  { title: "Vedtægter",   desc: "Foreningens regler og struktur",       url: "Vedtægter.html" },
+                  { title: "Bestyrelse",  desc: "Hvem driver foreningen",               url: "Bestyrelse.html" },
+                  { title: "Referater",   desc: "Generalforsamlinger 2016–2024",        url: "referater/Referater.html" },
+                  { title: "Medlemsliste", desc: "Aktive medlemmer og andele",          url: "#medlemmer" },
+                ].map(({ title, desc, url }) => (
+                  <a key={title} href={url}
+                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${t.border}`, cursor: "pointer", textDecoration: "none" }}
+                    onMouseEnter={e => e.currentTarget.querySelector(".lt").style.color = a.primary}
+                    onMouseLeave={e => e.currentTarget.querySelector(".lt").style.color = t.text}>
+                    <div>
+                      <div className="lt" style={{ fontSize: 14, fontWeight: 500, color: t.text, transition: "color 0.2s" }}>{title}</div>
+                      <div style={{ fontSize: 11, color: t.textFaint, marginTop: 2 }}>{desc}</div>
+                    </div>
+                    <span style={{ color: a.primary, fontSize: 15 }}>→</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 18 }}>Seneste nyt</p>
+              {(liveNews.length > 0
+                ? liveNews.map(n => ({ date: n.datoVis || n.dato, title: n.titel, cat: n.kategori, url: `nyheder/${n.fil}` }))
+                : news
+              ).map(item => (
+                <a key={item.title} href={item.url || "#"} target="_blank" rel="noreferrer"
+                  style={{ display: "flex", gap: 16, padding: "16px 20px", background: t.bgCard, borderLeft: `2px solid ${a.primary}`, marginBottom: 2, cursor: "pointer", transition: "background 0.15s", textDecoration: "none" }}
+                  onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
+                  onMouseLeave={e => e.currentTarget.style.background = t.bgCard}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 5 }}>
+                      <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", padding: "2px 7px", background: `${a.primary}22`, color: a.primary, fontWeight: 600 }}>{item.cat}</span>
+                      <span style={{ fontSize: 11, color: t.textFaint }}>{item.date}</span>
+                    </div>
+                    <div style={{ fontSize: 14, color: t.text }}>{item.title}</div>
+                  </div>
+                  <span style={{ color: t.textFaint, fontSize: 13 }}>↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ANEKDOTER ── */}
+      <section id="anekdoter" className="r-section section-alt">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="r-grid-vals">
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: a.primary, marginBottom: 12 }}>VIDEN &amp; LOVE</p>
+              <h2 style={{ fontFamily: serif, fontSize: "clamp(24px,3vw,44px)", fontWeight: 400, color: t.text, lineHeight: 1.15, textWrap: "pretty" }}>Anekdoter</h2>
+              <p style={{ fontSize: 14, lineHeight: 1.72, color: t.textMuted, marginTop: 16, textWrap: "pretty" }}>Termer, grænser og historier der former den fælles forståelse af hvad god whisky er.</p>
+            </div>
+            <div>
+              {anecdotes.map((an, i) => (
+                <div key={an.term} className="anec-card" style={{ padding: "24px 0 24px 24px" }}>
+                  <div style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 8 }}>
+                    <span style={{ fontFamily: "monospace", fontSize: 10, color: t.textFaint }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span style={{ fontFamily: serif, fontSize: 20, color: a.primary, fontWeight: 400 }}>{an.term}</span>
+                  </div>
+                  <p style={{ fontSize: 14, lineHeight: 1.72, color: t.textMuted, textWrap: "pretty" }}>{an.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="footer-bg" style={{ padding: "56px 32px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 40, flexWrap: "wrap", gap: 32 }}>
+            <div>
+              <WTKFLogo height={90} color={t.text} accent={a.primary} full={true} />
+              <div style={{ fontSize: 12, color: t.textFaint, fontStyle: "italic", marginTop: 8 }}>Stiftet 2014 · Fredericia, Danmark</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 120px)", gap: 28 }}>
+              {[
+                { heading: "Foreningen",   links: ["Om WTKF", "Vedtægter", "Bestyrelse", "Referater"] },
+                { heading: "Fade",         links: ["Lagrer", "Afyldt", "Oversigtsark"] },
+                { heading: "Aktiviteter", links: ["Ture", "Generalforsamling", "Smagninger", "Anekdoter"] },
+              ].map(col => (
+                <div key={col.heading}>
+                  <div style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: t.textFaint, marginBottom: 14 }}>{col.heading}</div>
+                  {col.links.map(link => (
+                    <div key={link} style={{ fontSize: 12, color: t.textMuted, marginBottom: 9, cursor: "pointer", transition: "color 0.15s" }}
+                      onMouseEnter={e => e.currentTarget.style.color = t.text}
+                      onMouseLeave={e => e.currentTarget.style.color = t.textMuted}>{link}</div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ height: 1, background: t.border, marginBottom: 20 }} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <span style={{ fontSize: 11, color: t.textFaint }}>
+              © 2026 WhiskyTønde Klappe Forening.&nbsp;·&nbsp;
+              <a href="https://www.pexels.com/photo/dimly-lit-wine-cellar-with-wooden-barrels-30654296/" target="_blank" rel="noopener" style={{ color: t.textFaint, textDecoration: "underline", textUnderlineOffset: 2 }}>
+                Foto: Juliane Monari / Pexels
+              </a>
+            </span>
+            <span style={{ fontFamily: serif, color: a.primary, fontStyle: "italic", fontSize: "30px" }}>Slàinte Mhath</span>
+          </div>
+        </div>
+      </footer>
+
+      {/* ── CASK MODAL ── */}
+      {selectedCask && <CaskModal cask={selectedCask} onClose={() => setSelected(null)} t={t} a={a} serif={serif} />}
+
+      {/* ── TWEAKS PANEL ── */}
+      <TweaksPanel tweaks={tweaks} setTweak={setTweak}>
+        <TweakSection label="Farvetema">
+          <TweakRadio id="theme" label="Tema" options={["auto", "dark", "light"]} value={tweaks.theme} onChange={v => setTweak("theme", v)} />
+          <TweakRadio id="accentColor" label="Accent" options={["amber", "copper", "teal"]} value={tweaks.accentColor} onChange={v => setTweak("accentColor", v)} />
+        </TweakSection>
+        <TweakSection label="Typografi">
+          <TweakRadio id="font" label="Overskrifter" options={["playfair", "sans"]} value={tweaks.font} onChange={v => setTweak("font", v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
