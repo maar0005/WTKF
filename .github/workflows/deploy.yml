@@ -56,10 +56,29 @@ jobs:
       - name: Byg manifests fra HTML-filer
         run: python3 .github/scripts/build_manifests.py
 
-      - name: Commit opdaterede manifests
+      - name: Commit og upload opdaterede manifests
+        env:
+          FTP_HOST: ${{ secrets.SIMPLY_HOST }}
+          FTP_USER: ${{ secrets.SIMPLY_USER }}
+          FTP_PASS: ${{ secrets.SIMPLY_PASSWORD }}
+          FTP_PATH: ${{ secrets.SIMPLY_PATH }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add nyheder/manifest.json ture/manifest.json
-          git diff --cached --quiet || git commit -m "auto: opdater manifests [skip ci]"
-          git push
+          if git diff --cached --quiet; then
+            echo "Ingen manifest-ændringer"
+          else
+            git commit -m "auto: opdater manifests [skip ci]"
+            git push
+            sudo apt-get install -y lftp
+            lftp -c "
+              set net:prefer-family IPv4
+              set ftp:ssl-force true
+              set ssl:verify-certificate false
+              open -u $FTP_USER,$FTP_PASS ftp://$FTP_HOST
+              put -O ${FTP_PATH}nyheder nyheder/manifest.json
+              put -O ${FTP_PATH}ture ture/manifest.json
+              quit
+            "
+          fi
