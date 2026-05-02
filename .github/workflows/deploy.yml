@@ -1,0 +1,40 @@
+name: Deploy til Simply
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SIMPLY_HOST }}
+          username: ${{ secrets.SIMPLY_USER }}
+          password: ${{ secrets.SIMPLY_PASSWORD }}
+          server-dir: ${{ secrets.SIMPLY_PATH }}
+          protocol: ftps
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/node_modules/**
+            **/data/snapshots/**
+            AGENT_PLAN.md
+            README.md
+
+      - name: Smoke test
+        run: |
+          sleep 15
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://wtkf.dk)
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::wtkf.dk returnerede HTTP $STATUS"
+            exit 1
+          fi
+          echo "wtkf.dk svarer 200 OK"

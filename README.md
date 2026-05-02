@@ -1,6 +1,6 @@
-# WTKF – Whisky Tasting Klub Frederiksberg
+# WTKF – Whisky Tønde Klapper Forening
 
-Hjemmeside for WTKF, en privat whiskyforening på Frederiksberg.  
+Hjemmeside for WTKF, en privat whiskyforening 
 Siden hostes på [maar0005.github.io/WTKF](https://maar0005.github.io/WTKF/).
 
 ---

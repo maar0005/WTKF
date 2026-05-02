@@ -1,0 +1,63 @@
+name: Daglig Sheets backup
+
+on:
+  schedule:
+    # Hver dag kl 03:00 UTC = 04:00/05:00 dansk tid
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Hent CSV fra Sheets
+        run: |
+          mkdir -p data/snapshots
+          DATE=$(date +%Y-%m-%d)
+
+          curl -fL "${{ secrets.SHEETS_CSV_URL_FADE }}"   -o "data/fade.csv"
+          curl -fL "${{ secrets.SHEETS_CSV_URL_ANDELE }}" -o "data/andele.csv"
+
+          cp "data/fade.csv"   "data/snapshots/fade-${DATE}.csv"
+          cp "data/andele.csv" "data/snapshots/andele-${DATE}.csv"
+
+      - name: Verificér at filerne ikke er tomme
+        run: |
+          for f in data/fade.csv data/andele.csv; do
+            if [ ! -s "$f" ]; then
+              echo "::error::$f er tom — Sheets-URL forkert?"
+              exit 1
+            fi
+            LINES=$(wc -l < "$f")
+            echo "$f: $LINES linjer"
+          done
+
+      - name: Commit til GitHub
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "Ingen ændringer i data"
+          else
+            git commit -m "Sheets backup $(date +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Upload CSV-filer til Simply
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SIMPLY_HOST }}
+          username: ${{ secrets.SIMPLY_USER }}
+          password: ${{ secrets.SIMPLY_PASSWORD }}
+          server-dir: ${{ secrets.SIMPLY_PATH }}data/
+          local-dir: ./data/
+          protocol: ftps
+          exclude: |
+            **/snapshots/**
+            **/snapshots
