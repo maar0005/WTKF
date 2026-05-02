@@ -35,8 +35,6 @@ Alt redigering foregår direkte på GitHub — ingen kodekendskab nødvendigt.
 
 ### 1. Tilføj en nyhed
 
-**Trin 1 — Opret HTML-filen**
-
 1. Gå til mappen **`nyheder/`** på GitHub
 2. Åbn **`Nyhed skabelon.html`** → klik **Raw** → kopiér al teksten
 3. Gå tilbage til `nyheder/`, klik **Add file → Create new file**
@@ -54,32 +52,11 @@ const NYHED_BILLEDE    = "";           // fx "../uploads/foto.jpg" eller tom
 6. Skriv selve teksten i blokken `<script id="nyhed-raw" type="text/plain">` — bare copy-paste fra Word/mail
 7. Klik **Commit changes**
 
-**Trin 2 — Tilføj til oversigten**
-
-1. Åbn **`nyheder/manifest.json`** og klik blyantsikonet
-2. Tilføj en ny post øverst i listen:
-
-```json
-{
-  "fil": "Generalforsamling 2026.html",
-  "titel": "Generalforsamling 2026",
-  "undertitel": "Referat og billeder fra årets generalforsamling",
-  "dato": "2026-03-15",
-  "datoVis": "15. marts 2026",
-  "kategori": "FORENING",
-  "billede": ""
-},
-```
-
-> `dato` skal være `ÅÅÅÅ-MM-DD` — bruges til sortering. Husk komma efter `}` på alle poster undtagen den sidste.
-
-3. Klik **Commit changes**
+> `manifest.json` opdateres automatisk — ingen manuel redigering nødvendig.
 
 ---
 
 ### 2. Tilføj en tur
-
-**Trin 1 — Opret HTML-filen**
 
 1. Gå til mappen **`ture/`**
 2. Åbn **`Tur skabelon.html`** → Raw → kopiér
@@ -93,29 +70,13 @@ const TUR_DATO        = "September 2026";
 const TUR_AAR         = "2026";
 const TUR_DELTAGERS   = 8;                         // 0 = vises ikke
 const TUR_BILLEDE     = "../uploads/islay2026.jpg"; // eller ""
+const TUR_BESKRIVELSE = "Fem dage på Islay med besøg hos Bruichladdich, Bowmore og Ardbeg.";
 ```
 
 5. Skriv turteksten i `<script id="tur-raw" type="text/plain">` blokken
 6. Klik **Commit changes**
 
-**Trin 2 — Tilføj til oversigten**
-
-1. Åbn **`ture/manifest.json`** og klik blyantsikonet
-2. Tilføj øverst i listen:
-
-```json
-{
-  "fil": "Islay 2026.html",
-  "titel": "Islay 2026",
-  "destination": "Islay, Skotland",
-  "dato": "2026-09-01",
-  "år": "2026",
-  "billede": "../uploads/islay2026.jpg",
-  "beskrivelse": "Fem dage på Islay med besøg hos Bruichladdich, Bowmore og Ardbeg."
-},
-```
-
-3. Klik **Commit changes**
+> `manifest.json` opdateres automatisk — ingen manuel redigering nødvendig.
 
 ---
 
@@ -250,9 +211,9 @@ Al kode og alt statisk indhold lever i dette repo og kan gendannes til et vilkå
 
 | Hvad | Filer der redigeres |
 |------|---------------------|
-| Ny nyhed | `nyheder/NyFil.html` + `nyheder/manifest.json` |
-| Ny tur | `ture/NyFil.html` + `ture/manifest.json` |
-| Nyt referat | `referater/NyFil.html` + `wtkf-data.js` |
+| Ny nyhed | `nyheder/NyFil.html` — manifest opdateres automatisk |
+| Ny tur | `ture/NyFil.html` — manifest opdateres automatisk |
+| Nyt referat | `referater/Referat ÅÅÅÅ.html` — siden finder den automatisk |
 | Nyt fad / andele | Google Sheets |
 | Nyt billede | `uploads/` |
 | Arkivér indhold | Flyt til `arkiv/` + opdater manifest |
