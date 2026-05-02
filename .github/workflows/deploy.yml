@@ -30,15 +30,17 @@ jobs:
             README.md
 
       - name: Smoke test
+        env:
+          SMOKE_URL: ${{ secrets.SMOKE_TEST_URL }}
         run: |
           for i in 1 2 3 4 5; do
             sleep 15
-            STATUS=$(curl -o /dev/null -s -w "%{http_code}" -L https://wtkf.dk)
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" -L "$SMOKE_URL")
             if [ "$STATUS" = "200" ]; then
-              echo "wtkf.dk svarer 200 OK"
+              echo "$SMOKE_URL svarer 200 OK"
               exit 0
             fi
-            echo "Forsøg $i: wtkf.dk returnerede HTTP $STATUS"
+            echo "Forsøg $i: $SMOKE_URL returnerede HTTP $STATUS"
           done
-          echo "::error::wtkf.dk returnerede HTTP $STATUS efter 5 forsøg"
+          echo "::error::$SMOKE_URL returnerede HTTP $STATUS efter 5 forsøg"
           exit 1
