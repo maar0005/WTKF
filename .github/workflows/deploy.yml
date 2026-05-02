@@ -44,3 +44,22 @@ jobs:
           done
           echo "::error::$SMOKE_URL returnerede HTTP $STATUS efter 5 forsøg"
           exit 1
+
+  update-manifests:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Byg manifests fra HTML-filer
+        run: python3 .github/scripts/build_manifests.py
+
+      - name: Commit opdaterede manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nyheder/manifest.json ture/manifest.json
+          git diff --cached --quiet || git commit -m "auto: opdater manifests [skip ci]"
+          git push
