@@ -190,6 +190,62 @@ Når en nyhed eller tur er forældet, flyttes den til arkivet i stedet for at sl
 
 ---
 
+## Backup-strategi
+
+Siden og dens data beskyttes af tre lag:
+
+### Lag 1 — Daglig CSV-backup (automatisk)
+
+En GitHub Action kører hver dag kl. 03:00 UTC og henter de to Google Sheets-faner som CSV-filer:
+
+- `data/fade.csv` — fadoversigt
+- `data/andele.csv` — andelsfordeling
+
+Filerne committes til repo'et og uploades til Simply, så siden kan vise data selv hvis Google Sheets er utilgængeligt (automatisk fallback i `wtkf-data.js`).
+
+Daglige snapshots gemmes desuden i `data/snapshots/` med dato i filnavnet, fx `data/snapshots/fade-2026-05-01.csv`. Disse er kun på GitHub, ikke på Simply.
+
+### Lag 2 — Ugentlig Simply-snapshot (automatisk)
+
+Hver søndag kl. 04:00 UTC spejler en GitHub Action hele Simply-serveren og gemmer indholdet som en komprimeret fil i GitHub Releases:
+
+```
+simply-backup-YYYY-MM-DD.tar.gz
+```
+
+De 12 seneste ugentlige backups bevares (ca. 3 måneder). Ældre slettes automatisk.
+
+**Brug ved nødsituation:** Download den ønskede `.tar.gz` fra [Releases-siden](../../releases), pak den ud, og upload indholdet manuelt til Simply via fx FileZilla.
+
+### Lag 3 — Git-historik
+
+Al kode og alt statisk indhold lever i dette repo og kan gendannes til et vilkårligt tidspunkt via `git checkout`.
+
+### Oversigt
+
+| Lag | Hvad | Hvor | Hyppighed | Opbevaring |
+|-----|------|------|-----------|------------|
+| 1 | CSV-data fra Sheets | GitHub + Simply | Dagligt | Ubegrænset (i `data/snapshots/`) |
+| 2 | Hele Simply-indholdet | GitHub Releases | Ugentligt | 12 seneste (≈3 mdr.) |
+| 3 | Kode og statisk indhold | Git-historik | Ved hvert commit | Ubegrænset |
+
+### Hvis noget går galt
+
+**Siden er nede eller viser forkerte data:**
+1. Tjek seneste workflow-kørsel under [Actions](../../actions)
+2. Tjek Simply's driftstatus
+3. Gendan manuelt: download seneste Release-backup → pak ud → upload via FileZilla
+
+**Sheets-data er ødelagt:**
+1. Find den seneste korrekte CSV i `data/snapshots/`
+2. Kopiér indholdet tilbage til Google Sheets manuelt
+
+**Kode er gået i stykker efter et commit:**
+1. Find det fungerende commit i git-historikken
+2. Brug `git revert` eller gendan de konkrete filer
+
+---
+
 ### Hurtig oversigt
 
 | Hvad | Filer der redigeres |
