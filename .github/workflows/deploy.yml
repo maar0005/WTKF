@@ -35,7 +35,7 @@ jobs:
         run: |
           for i in 1 2 3 4 5; do
             sleep 15
-            STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$SMOKE_URL")
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" -A "Mozilla/5.0" "$SMOKE_URL")
             if [[ "$STATUS" =~ ^(200|301|302)$ ]]; then
               echo "$SMOKE_URL svarer 200 OK"
               exit 0
