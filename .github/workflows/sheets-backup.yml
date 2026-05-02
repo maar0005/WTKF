@@ -20,8 +20,10 @@ jobs:
           mkdir -p data/snapshots
           DATE=$(date +%Y-%m-%d)
 
-          curl -fL "${{ secrets.SHEETS_CSV_URL_FADE }}"   -o "data/fade.csv"
-          curl -fL "${{ secrets.SHEETS_CSV_URL_ANDELE }}" -o "data/andele.csv"
+          # Samme base-URL, forskellig GID per fane (spejler wtkf-data.js)
+          BASE="${{ secrets.SHEETS_CSV_URL }}"
+          curl -fL "${BASE}&gid=367938426&single=true&output=csv" -o "data/fade.csv"
+          curl -fL "${BASE}&gid=0&single=true&output=csv"         -o "data/andele.csv"
 
           cp "data/fade.csv"   "data/snapshots/fade-${DATE}.csv"
           cp "data/andele.csv" "data/snapshots/andele-${DATE}.csv"
