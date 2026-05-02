@@ -52,14 +52,19 @@ jobs:
           fi
 
       - name: Upload CSV-filer til Simply
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.SIMPLY_HOST }}
-          username: ${{ secrets.SIMPLY_USER }}
-          password: ${{ secrets.SIMPLY_PASSWORD }}
-          server-dir: ${{ secrets.SIMPLY_PATH }}data/
-          local-dir: ./data/
-          protocol: ftps
-          exclude: |
-            **/snapshots/**
-            **/snapshots
+        env:
+          FTP_HOST: ${{ secrets.SIMPLY_HOST }}
+          FTP_USER: ${{ secrets.SIMPLY_USER }}
+          FTP_PASS: ${{ secrets.SIMPLY_PASSWORD }}
+          FTP_PATH: ${{ secrets.SIMPLY_PATH }}
+        run: |
+          sudo apt-get install -y lftp
+          lftp -c "
+            set net:prefer-family IPv4
+            set ftp:ssl-force true
+            set ssl:verify-certificate false
+            open -u $FTP_USER,$FTP_PASS ftp://$FTP_HOST
+            put -O ${FTP_PATH}data data/fade.csv
+            put -O ${FTP_PATH}data data/andele.csv
+            quit
+          "

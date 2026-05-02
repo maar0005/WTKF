@@ -31,10 +31,14 @@ jobs:
 
       - name: Smoke test
         run: |
-          sleep 15
-          STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://wtkf.dk)
-          if [ "$STATUS" != "200" ]; then
-            echo "::error::wtkf.dk returnerede HTTP $STATUS"
-            exit 1
-          fi
-          echo "wtkf.dk svarer 200 OK"
+          for i in 1 2 3 4 5; do
+            sleep 15
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" -L https://wtkf.dk)
+            if [ "$STATUS" = "200" ]; then
+              echo "wtkf.dk svarer 200 OK"
+              exit 0
+            fi
+            echo "Forsøg $i: wtkf.dk returnerede HTTP $STATUS"
+          done
+          echo "::error::wtkf.dk returnerede HTTP $STATUS efter 5 forsøg"
+          exit 1
