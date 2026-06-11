@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WTKF Nyheder</title>
+    <link>https://wtkf.dk/nyheder/Nyheder.html</link>
+    <description>Seneste nyt fra WhiskyTønde Klappe Foreningen</description>
+    <language>da</language>
+    <atom:link href="https://wtkf.dk/nyheder/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Nyt fad er landet!</title>
+      <link>https://wtkf.dk/nyheder/Nyt%20fad%202026.html</link>
+      <guid isPermaLink="true">https://wtkf.dk/nyheder/Nyt%20fad%202026.html</guid>
+      <description>Bruichladdich – Islay Single Malt, Cask Strength</description>
+      <category>FAD</category>
+      <pubDate>Mon, 20 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

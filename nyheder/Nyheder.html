@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nyheder – WTKF</title>
+<meta name="description" content="Seneste nyt fra WhiskyTønde Klappe Foreningen — nye fade, ture, smagninger og foreningsnyt.">
+<link rel="alternate" type="application/rss+xml" title="WTKF Nyheder" href="feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -72,6 +74,23 @@
   .arkiv-titel { font-size: 14px; color: var(--text); flex: 1; }
   .arkiv-arrow { color: var(--accent); font-size: 13px; }
 
+  /* ── SØGNING ── */
+  #soeg-wrap { position: relative; margin-bottom: 28px; max-width: 420px; }
+  #soeg {
+    width: 100%; padding: 11px 36px 11px 14px;
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color .18s; letter-spacing: .01em;
+  }
+  #soeg:focus { border-color: var(--accent); }
+  #soeg::placeholder { color: var(--faint); }
+  #soeg-ryd {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--faint); cursor: pointer;
+    font-size: 18px; line-height: 1; padding: 2px 6px; display: none;
+  }
+  #ingen-match { display: none; padding: 32px 0 48px; font-size: 14px; color: var(--faint); font-style: italic; }
+
   /* ── STATUS ── */
   #status { display: flex; align-items: center; gap: 10px; color: var(--faint); font-size: 13px; margin-bottom: 32px; }
   .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
@@ -111,8 +130,14 @@
   <h1>Nyheder</h1>
   <p class="page-meta">Nye fade, ture og foreningsnyt. Siden opdateres automatisk når der tilføjes nyheder.</p>
 
+  <div id="soeg-wrap">
+    <input id="soeg" type="search" placeholder="Søg i nyheder…" aria-label="Søg i nyheder">
+    <button id="soeg-ryd" aria-label="Ryd søgning">×</button>
+  </div>
+
   <div id="status"><div class="spinner"></div><span>Henter nyheder…</span></div>
   <div id="nyhed-grid"></div>
+  <div id="ingen-match">Ingen nyheder matcher søgningen.</div>
   <div id="empty"><p>Ingen aktive nyheder endnu. Opret en nyhed ved at kopiere<br><code>Nyhed skabelon.html</code> og tilføje den til <code>nyheder/manifest.json</code>.</p></div>
 
   <div id="arkiv-sektion" style="display:none;">
@@ -195,16 +220,41 @@ async function load() {
 
     statusEl.style.display = "none";
 
+    const sogbare = [];
     if (aktive.length === 0) {
       emptyEl.style.display = "block";
     } else {
-      aktive.forEach(item => grid.appendChild(buildCard(item, "")));
+      aktive.forEach(item => {
+        const el = grid.appendChild(buildCard(item, ""));
+        sogbare.push({ el, tekst: `${item.titel} ${item.undertitel || ""} ${item.kategori}`.toLowerCase() });
+      });
     }
 
     if (arkiverede.length > 0) {
       arkivSek.style.display = "block";
-      arkiverede.forEach(item => arkivList.appendChild(buildArkivItem(item, "arkiv/")));
+      arkiverede.forEach(item => {
+        const el = arkivList.appendChild(buildArkivItem(item, "arkiv/"));
+        sogbare.push({ el, tekst: `${item.titel} ${item.undertitel || ""} ${item.kategori}`.toLowerCase(), arkiv: true });
+      });
     }
+
+    const soeg     = document.getElementById("soeg");
+    const soegRyd  = document.getElementById("soeg-ryd");
+    const ingenEl  = document.getElementById("ingen-match");
+    const filtrer = () => {
+      const q = soeg.value.trim().toLowerCase();
+      soegRyd.style.display = q ? "block" : "none";
+      let synlige = 0, arkivSynlige = 0;
+      sogbare.forEach(({ el, tekst, arkiv }) => {
+        const vis = !q || tekst.includes(q);
+        el.style.display = vis ? "" : "none";
+        if (vis) { synlige++; if (arkiv) arkivSynlige++; }
+      });
+      ingenEl.style.display = q && synlige === 0 ? "block" : "none";
+      if (arkiverede.length > 0) arkivSek.style.display = (!q || arkivSynlige > 0) ? "block" : "none";
+    };
+    soeg.addEventListener("input", filtrer);
+    soegRyd.addEventListener("click", () => { soeg.value = ""; filtrer(); soeg.focus(); });
 
   } catch (e) {
     statusEl.style.display = "none";
