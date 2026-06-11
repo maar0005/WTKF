@@ -39,7 +39,7 @@ function CaskModal({ cask, onClose, t, a, serif }) {
               <h2 style={{ fontFamily: serif, fontSize: 30, fontWeight: 400, color: t.text, lineHeight: 1.1 }}>{cask.name}</h2>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
-              <button onClick={onClose} style={{
+              <button onClick={onClose} aria-label="Luk" style={{
                 background: "none", border: `1px solid ${t.border}`,
                 color: t.textMuted, cursor: "pointer",
                 width: 32, height: 32, fontSize: 16, display: "flex",
@@ -547,7 +547,7 @@ function MemberTable({ casks, medlemmer, t, a, serif, onSelectCask }) {
             onBlur={e => e.target.style.borderColor = query ? a.primary : t.border}
           />
           {query && (
-            <button onClick={() => { setQuery(""); setFocused(null); }} style={{
+            <button onClick={() => { setQuery(""); setFocused(null); }} aria-label="Ryd søgning" style={{
               position: "absolute", right: 12, background: "none", border: "none",
               color: t.textFaint, cursor: "pointer", fontSize: 18, lineHeight: 1, padding: "2px 4px",
             }}>×</button>
