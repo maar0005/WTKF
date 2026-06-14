@@ -1,0 +1,25 @@
+name: PR-tjek
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  valider:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Byg manifests (tørkørsel)
+        run: python3 .github/scripts/build_manifests.py
+
+      - name: Validér JSON-manifests
+        run: |
+          for f in $(find . -name "manifest.json" -not -path "./.git/*"); do
+            python3 -m json.tool "$f" > /dev/null
+            echo "$f OK"
+          done
+
+      - name: Tjek interne links
+        run: python3 .github/scripts/check_links.py

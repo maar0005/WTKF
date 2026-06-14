@@ -4,12 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WTKF – WhiskyTønde Klappe Forening</title>
+<meta name="description" content="WhiskyTønde Klappe Foreningen ejer andele i nøje udvalgte single cask fade fra Skotlands fineste destillerier — altid cask strength, aldrig kompromis. Stiftet 2014 i Fredericia.">
+<link rel="canonical" href="https://wtkf.dk/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="WTKF – WhiskyTønde Klappe Forening">
+<meta property="og:description" content="Privat whiskyforening med andele i single cask fade fra Skotlands fineste destillerier. Stiftet 2014 i Fredericia.">
+<meta property="og:url" content="https://wtkf.dk/">
+<meta property="og:image" content="https://wtkf.dk/uploads/pexels-julianemonarifotografia-30654296.jpg">
+<meta property="og:locale" content="da_DK">
+<meta name="theme-color" content="#1c1814">
+<link rel="alternate" type="application/rss+xml" title="WTKF Nyheder" href="nyheder/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" as="image" href="uploads/pexels-julianemonarifotografia-30654296.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cinzel:wght@600;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="wtkf-data.js"></script>
+<script defer src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script defer src="wtkf-data.js"></script>
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel" src="wtkf-components.jsx"></script>
 <style>
@@ -219,6 +230,7 @@ function App() {
 
           {/* Hamburger */}
           <button className="show-mobile" onClick={() => setMobile(o => !o)}
+            aria-label={mobileOpen ? "Luk menu" : "Åbn menu"} aria-expanded={mobileOpen}
             style={{ marginLeft: "auto", background: "none", border: `1px solid ${t.border}`, color: t.text, width: 40, height: 40, cursor: "pointer", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5 }}>
             {mobileOpen
               ? <span style={{ fontSize: 20, lineHeight: 1 }}>×</span>

@@ -151,6 +151,19 @@ Når en nyhed eller tur er forældet, flyttes den til arkivet i stedet for at sl
 
 ---
 
+## Automatik ved deploy
+
+Når der pushes til `main`, kører deploy-workflowet som:
+
+1. Tjekker at alle interne links virker (`.github/scripts/check_links.py`)
+2. Genbygger `nyheder/manifest.json`, `ture/manifest.json`, `sitemap.xml` og RSS-feedet `nyheder/feed.xml` (`.github/scripts/build_manifests.py`) og committer ændringerne
+3. Uploader alt til Simply via FTPS
+4. Kører en smoke test mod den live side
+
+Pull requests valideres automatisk af `PR-tjek`-workflowet (manifest-bygning, JSON-validering og link-tjek), så fejl fanges inden de rammer `main`.
+
+---
+
 ## Backup-strategi
 
 Siden og dens data beskyttes af tre lag:
